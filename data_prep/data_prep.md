@@ -4,7 +4,7 @@ Scripts de preparación y análisis del dataset JRDB. Cada entrada indica lo que
 
 ## Orden de ejecución del pipeline
 
-`01` genera el CSV que consumen `02` y `11`. El resto (figuras y análisis) son independientes.
+`01` genera el CSV que consumen `02`, `11` y `12`. El resto (figuras y análisis) son independientes.
 
 ---
 
@@ -13,18 +13,18 @@ Scripts de preparación y análisis del dataset JRDB. Cada entrada indica lo que
 
 **Salida:** `jrdb_clean_trajectories.csv`
 
-Cada fila es un peatón en un frame concreto (de una secuencia y cámara). Junto a los metadatos
+Cada fila es un peatón en un frame concreto (de una secuencia y cámara). Junto a
 (`sequence`, `camera`, `frame`, `track_id`, `global_id`, `subtrack_id`, `split`,
 `visible_keypoints`) se guardan las **11 características** que usará el modelo:
 
-| Característica | Qué es | Cómo se obtiene |
+| Característica | Definición | Obtención |
 |---|---|---|
-| `x_norm`, `y_norm` | posición del centro del bbox | centro del bounding box dividido por el ancho/alto de la imagen |
-| `bbox_w_norm`, `bbox_h_norm` | tamaño del bbox | ancho y alto del bounding box normalizados por la imagen |
-| `vx`, `vy` | velocidad | diferencia de posición entre frames consecutivos (`diff` dentro de cada subtrayectoria) |
-| `speed` | velocidad lineal | módulo `sqrt(vx² + vy²)` |
-| `ax`, `ay` | aceleración | diferencia de la velocidad entre frames consecutivos |
-| `sin_dir`, `cos_dir` | dirección del movimiento | seno y coseno de `arctan2(vy, vx)` (codificación circular sin saltos) |
+| `x_norm`, `y_norm` | Posición del centro del bbox | Centro del bbox dividido por el ancho/alto de la imagen |
+| `bbox_w_norm`, `bbox_h_norm` | Tamaño del bbox | Ancho y alto del bbox normalizados por la imagen |
+| `vx`, `vy` | Velocidad | Diferencia de posición entre frames consecutivos |
+| `speed` | Velocidad lineal | Módulo `sqrt(vx² + vy²)` |
+| `ax`, `ay` | Aceleración | Diferencia de la velocidad entre frames consecutivos |
+| `sin_dir`, `cos_dir` | Dirección del movimiento | Seno y coseno de `arctan2(vy, vx)` |
 
 Todo se calcula por **subtrayectoria** (trayectoria continua sin saltos temporales), tras filtrar
 las detecciones con pose de baja calidad (< 5 keypoints visibles) y las trayectorias de menos de 20 frames.
@@ -39,9 +39,9 @@ Aplica una **ventana deslizante** sobre cada subtrayectoria: por cada tramo de 2
 
 - **`X_train` → forma `(N, 8, 11)`**: N muestras, 8 frames observados y las **11 características 2D**
   del CSV (`x_norm`, `y_norm`, `vx`, `vy`, `ax`, `ay`, `speed`, `sin_dir`, `cos_dir`, `bbox_w_norm`,
-  `bbox_h_norm`), todas en el marco de la imagen.
+  `bbox_h_norm`), en el marco de la imagen.
 - **`Y_train` → forma `(N, 12, 2)`**: 12 frames futuros y 2 valores (Δx, Δy), el **desplazamiento
-  relativo** al último frame observado (`posición_futura − última_posición_observada`).
+  relativo** al último frame observado.
 
 `subtrack_ids` y `splits` guardan, por muestra, de qué subtrayectoria viene y si es train o val
 (evita mezclar ventanas de la misma trayectoria entre train y val).
@@ -52,45 +52,41 @@ Aplica una **ventana deslizante** sobre cada subtrayectoria: por cada tramo de 2
 **Salida:**
 - `dataset_longitudes.png`: histograma de la longitud de las subtrayectorias (train vs val), con la línea del mínimo de 20 frames.
 - `dataset_densidad.png`: histograma del número de peatones simultáneos por escena (train vs val).
-- `dataset_trayectorias_h.png` / `_v.png`: ejemplo de las trayectorias de los peatones en una escena de train y otra de val (versión horizontal y vertical).
+- `dataset_trayectorias_h.png` / `_v.png`: ejemplo de las trayectorias de los peatones en una escena de train y otra de val.
 
 ## 4. `04_viz_scene_boxes.py`
 > Figura de una escena completa con todos los peatones anotados y sus cuadros delimitadores 2D dibujados.
 
 **Salida:**
-- `escena_cajas.png`: una imagen real de la escena con el cuadro delimitador 2D de cada peatón dibujado encima (ilustra qué es un dato 2D).
+- `escena_cajas.png`: una imagen real de la escena con el cuadro delimitador 2D de cada peatón dibujado encima.
 
 ## 5. `05_an_jrdb_general_analysis.py`
 > JRDBGeneralAnalysis realiza el análisis general de la estructura del dataset JRDB.
 
-**Salida:** — (solo por consola; análisis exploratorio)
-
 ## 6. `06_an_pointcloud.py`
 > Extraer features de la nube para introducirla como entrada a la red.
 
-**Salida:** — (solo por consola / visualización 3D; análisis exploratorio)
-
 ## 7. `07_viz_pointcloud_bev.py`
-> Figura de nube de puntos del lidar en vista BEV (desde arriba), con la caja 3D de un peatón y el radio de recorte de 3,5 m (recorte de entorno).
+> Figura de nube de puntos del lidar en vista desde arriba, con la caja 3D de un peatón y el radio de recorte de 3,5 m (recorte de entorno).
 
 **Salida:**
-- `pointcloud_bev.png`: nube de puntos LiDAR vista desde arriba (BEV), con la caja 3D de un peatón y el círculo de 3,5 m que marca el entorno del que se extraen las características (ilustra qué es un dato 3D/LiDAR).
+- `pointcloud_bev.png`: nube de puntos LiDAR vista desde arriba, con la caja 3D de un peatón y el círculo de 3,5 m que marca el entorno del que se extraen las características.
 
 ## 8. `08_viz_lidar_distribution.py`
 > Distribución de los peatones en el espacio físico.
 
 **Salida:**
-- `dataset_lidar_posiciones.png`: mapa de densidad de las posiciones `(cx, cy)` de los peatones en metros alrededor del robot (BEV), que muestra la cobertura de 360° del sensor.
+- `dataset_lidar_posiciones.png`: mapa de densidad de las posiciones `(cx, cy)` de los peatones en metros alrededor del robot, que muestra la cobertura de 360° del sensor.
 - `dataset_lidar_distancia.png`: histograma de la distancia de cada peatón al robot.
 
 ## 9. `09_viz_detection_error.py`
 > Figura que comprueba la relación detección-etiqueta 3D, midiendo el error de localización de las detecciones y la tasa de emparejamiento.
 
 **Salida:**
-- `dataset_deteccion_error.png`: histograma del error de localización entre detección y etiqueta (con media y mediana) y la tasa de emparejamiento; representa el ruido del detector LiDAR sobre todo el conjunto.
+- `dataset_deteccion_error.png`: histograma del error de localización entre detección y etiqueta y la tasa de emparejamiento; representa el ruido del detector LiDAR sobre todo el conjunto.
 
 ## 10. `10_viz_detection_error_filtrado.py`
-> Figura que comprueba la relación detección-etiqueta 3D, midiendo el error de localización y tasa de emparejamiento -> pero en este caso sobre el conjunto filtrado de subtrayectorias, submuestreadas (STRIDE=3), y solo sobre frames observados.
+> Figura que comprueba la relación detección-etiqueta 3D, midiendo el error de localización y tasa de emparejamiento -> sobre el conjunto filtrado de subtrayectorias, submuestreadas (STRIDE=3), y solo sobre frames observados.
 
 **Salida:**
 - `dataset_deteccion_error_filtrado.png`: mismo histograma de error y tasa de emparejamiento que el anterior, pero sobre el subconjunto curado que realmente entrena el modelo (representa el ruido del detector que el modelo debe tolerar).
@@ -106,13 +102,23 @@ de 2,4 s). La posición observada del peatón es la **detección 3D del LiDAR m�
 
 - **`X3d_det_motion` → forma `(N, 8, 9)`**: 8 frames observados y **9 características 3D** obtenidas de
   las detecciones (`cx`, `cy`, `vx`, `vy`, `ax`, `ay`, `speed`, `sin_dir`, `cos_dir`), en **metros** y
-  en el marco del robot. Respecto a las 2D desaparecen `bbox_w_norm`/`bbox_h_norm` (ya no hay bbox de
-  imagen, se tiene la posición física directa).
-- **`Y3d_det` → forma `(N, 12, 2)`**: 12 frames futuros y el **desplazamiento relativo** (Δx, Δy) en
-  metros, calculado desde la última posición observada detectada hasta las posiciones reales (GT).
+  en el marco del robot.
+- **`Y3d_det` → forma `(N, 12, 2)`**: 12 frames futuros y el **desplazamiento relativo** en
+  metros.
 
-Velocidad, aceleración, `speed` y dirección se derivan de `cx`, `cy` igual que en 2D
-(diferencias entre frames y `arctan2`).
+## 12. `12_val_proyeccion_2d3d.py`
+> Validación de la correspondencia 2D–3D que entra al modelo de fusión temprana.
+
+**Salida:**
+- `val_proyeccion_2d3d_{secuencia}_{frame}_{camara}.png` (una por cámara): sobre la imagen real se
+  dibuja la caja 2D anotada (verde) y, encima, la caja 3D del mismo peatón **proyectada** con la
+  calibración de JRDB (roja) más su centro 3D proyectado (aspa roja).
+
+Para un frame se proyecta la caja 3D de cada peatón sobre la imagen de la cámara y se comprueba que
+el **centro 3D proyectado cae dentro de la caja 2D** anotada.
+
+Reporta el **% de centros dentro** de la caja 2D y el **offset medio**. Un % alto con offset bajo (< 0,5) confirma que la detección 2D
+y la 3D son **el mismo peatón en el mismo frame**.
 
 ---
 
@@ -129,3 +135,4 @@ Velocidad, aceleración, `speed` y dirección se derivan de `cx`, `cy` igual que
 | `dataset_lidar_distancia.png` | 08 |
 | `dataset_deteccion_error.png` | 09 |
 | `dataset_deteccion_error_filtrado.png` | 10 |
+| `val_proyeccion_2d3d_{secuencia}_{frame}_{camara}.png` | 12 |
