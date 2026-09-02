@@ -63,9 +63,10 @@ class JRDBDatasetVisualizer:
                 edgecolor="white")
         ax.axvline(20, color="red", ls="--", label="mínimo (OBS+PRED=20)")
         ax.set_xlim(0, self.XMAX)
-        ax.set_xlabel("Longitud de subtrayectoria (frames)"); ax.set_ylabel("Número de subtrayectorias")
-        ax.set_title("Longitudes de subtrayectorias")
-        ax.legend()
+        ax.set_xlabel("Longitud de subtrayectoria (frames)", fontsize=16); ax.set_ylabel("Número de subtrayectorias", fontsize=16)
+        ax.tick_params(labelsize=14)
+        ax.set_title("Longitudes de subtrayectorias", fontsize=18)
+        ax.legend(fontsize=14)
         fig.tight_layout(); fig.savefig(f"{self.out}/dataset_longitudes.png", dpi=130); plt.close()
 
     def plot_densidad(self):
@@ -75,9 +76,10 @@ class JRDBDatasetVisualizer:
         ax.hist([self.peds_tr, self.peds_va], bins=bins, stacked=True,
                 color=["tab:blue", "tab:orange"], label=["Entrenamiento", "Validación"],
                 edgecolor="white", align="left")
-        ax.set_xlabel("Peatones simultáneos por escena"); ax.set_ylabel("Número de frames")
-        ax.set_title("Peatones por escena")
-        ax.legend()
+        ax.set_xlabel("Peatones simultáneos por escena", fontsize=16); ax.set_ylabel("Número de frames", fontsize=16)
+        ax.tick_params(labelsize=14)
+        ax.set_title("Peatones por escena", fontsize=18)
+        ax.legend(fontsize=14)
         fig.tight_layout(); fig.savefig(f"{self.out}/dataset_densidad.png", dpi=130); plt.close()
 
     def biggest_seq(self, split) -> str:
@@ -94,9 +96,10 @@ class JRDBDatasetVisualizer:
             for sid, t in sub.groupby("subtrack_id"):
                 t = t.sort_values("frame")
                 ax.plot(t["x"], t["y"], lw=1)
-            ax.invert_yaxis(); ax.set_xlabel("x (píxeles)"); ax.set_ylabel("y (píxeles)")
-            ax.set_title(f"{split}: {seq}", fontsize=10)
-        fig.suptitle("Ejemplo de distribución de trayectorias en una escena", fontsize=12)
+            ax.invert_yaxis(); ax.set_xlabel("x (píxeles)", fontsize=15); ax.set_ylabel("y (píxeles)", fontsize=15)
+            ax.tick_params(labelsize=13)
+            ax.set_title(f"{split}: {seq}", fontsize=16)
+        fig.suptitle("Ejemplo de distribución de trayectorias en una escena", fontsize=18)
         fig.tight_layout(); fig.savefig(f"{self.out}/{fname}", dpi=130); plt.close()
 
     def print_summary(self):

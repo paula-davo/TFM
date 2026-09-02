@@ -5,6 +5,7 @@ submuestreadas (STRIDE=3), y solo sobre frames observados.
 """
 import os
 import json
+import textwrap
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -96,10 +97,11 @@ fig, ax = plt.subplots(figsize=(7, 5))
 ax.hist(errors, bins=50, range=(0, MATCH_THRESH), color="tab:green", alpha=0.85)
 ax.axvline(errors.mean(), color="red", ls="--", lw=1.5, label=f"Media = {errors.mean():.3f} m")
 ax.axvline(np.median(errors), color="black", ls=":", lw=1.5, label=f"Mediana = {np.median(errors):.3f} m")
-ax.set_xlabel("Error de localización detección-etiqueta (m)")
-ax.set_ylabel("Número de detecciones")
-ax.set_title(f"Ruido del detector LiDAR — conjunto de entrenamiento (emparejamiento {rate:.1f}%)")
-ax.legend(); ax.grid(alpha=0.3)
+ax.set_xlabel("Error de localización detección-etiqueta (m)", fontsize=16)
+ax.set_ylabel("Número de detecciones", fontsize=16)
+ax.tick_params(labelsize=14)
+ax.set_title(textwrap.fill(f"Ruido del detector LiDAR — conjunto de entrenamiento (emparejamiento {rate:.1f}%)", 48), fontsize=18)
+ax.legend(fontsize=14); ax.grid(alpha=0.3)
 fig.tight_layout()
 fig.savefig(f"{OUT}/dataset_deteccion_error_filtrado.png", dpi=140, bbox_inches="tight")
 plt.close(fig)
