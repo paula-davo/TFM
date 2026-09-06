@@ -7,9 +7,9 @@ from tensorflow.keras.layers import Input, LSTM, Dense, Dropout, RepeatVector, T
 from tensorflow.keras.models import Model
 
 def load_cv_ref(data_dir, horizon):
-    """Carga los resultados de la referencia de Velocidad Constante (ade, fde) del horizonte
-    dado ('8_8', '12_8', '8_12'), guardado por el paso 00b en prediccion_3d/cv_baselines.json. 
-    Evita recalcular el CV en cada script de entrenamiento."""
+    # Carga los resultados de la referencia de Velocidad Constante (ade, fde) del horizonte
+    # dado ('8_8', '12_8', '8_12'), guardado por el paso 00b en prediccion_3d/cv_baselines.json. 
+    # Evita recalcular el CV en cada script de entrenamiento.
     import json
     path = f"{data_dir}/prediccion_3d/cv_baselines.json"
     try:
