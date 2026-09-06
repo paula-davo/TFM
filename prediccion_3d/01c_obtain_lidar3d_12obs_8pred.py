@@ -7,14 +7,15 @@ Se reprocesa a partir de X3d_motion.npy / Y3d.npy (mismas ventanas):
 3) La salida es el desplazamiento de los 8 frames de predicción a continuación de la observación.
 """
 
+import os
 import numpy as np
 
 DATA_DIR = "/mnt/c/Users/paula/Desktop/TFM"
 OBS_LEN, PRED_LEN = 12, 8
 
 if __name__ == "__main__":
-    X = np.load(f"{DATA_DIR}/X3d_motion.npy")   # (N, 8, 9)
-    Y = np.load(f"{DATA_DIR}/Y3d.npy")          # (N, 12, 2)
+    X = np.load(f"{DATA_DIR}/data/X3d_motion.npy")   # (N, 8, 9)
+    Y = np.load(f"{DATA_DIR}/data/Y3d.npy")          # (N, 12, 2)
     N = X.shape[0]
 
     # Reconstruye las 20 posiciones GT
@@ -38,6 +39,7 @@ if __name__ == "__main__":
 
     print(f"X: {Xc.shape}  Y: {Yc.shape}")
     print(f"Y (metros) — desplazamiento medio: {np.linalg.norm(Yc, axis=2).mean():.3f} m")
-    np.save(f"{DATA_DIR}/X3d_motion_12obs_8pred.npy", Xc)
-    np.save(f"{DATA_DIR}/Y3d_12obs_8pred.npy", Yc)
+    os.makedirs(f"{DATA_DIR}/data", exist_ok=True)
+    np.save(f"{DATA_DIR}/data/X3d_motion_12obs_8pred.npy", Xc)
+    np.save(f"{DATA_DIR}/data/Y3d_12obs_8pred.npy", Yc)
     print("Guardado: X3d_motion_12obs_8pred.npy, Y3d_12obs_8pred.npy")

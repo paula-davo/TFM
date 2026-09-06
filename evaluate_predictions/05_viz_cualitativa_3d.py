@@ -133,12 +133,12 @@ def draw_caso(members, seq_sel, fr_sel, out_name, obs_abs, gt_abs, det_abs, tidv
 
 def main():
     # Carga los datos: fusión temprana (imagen 11 + detecciones 3D 9 = 20)
-    Ximg = np.load(f"{DATA_DIR}/X_ds.npy")             # (N,8,11) imagen 2D
-    X3d = np.load(f"{DATA_DIR}/X3d_det_motion.npy")    # (N,8,9) detección 3D
+    Ximg = np.load(f"{DATA_DIR}/data/X_ds.npy")             # (N,8,11) imagen 2D
+    X3d = np.load(f"{DATA_DIR}/data/X3d_det_motion.npy")    # (N,8,9) detección 3D
     X = np.concatenate([Ximg, X3d], axis=2)            # (N,8,20) fusión
-    Y = np.load(f"{DATA_DIR}/Y3d_det.npy")[:, :8, :]   # (N,8,2) desplazamiento GT (8/8)
+    Y = np.load(f"{DATA_DIR}/data/Y3d_det.npy")[:, :8, :]   # (N,8,2) desplazamiento GT (8/8)
     # Carga la partición oficial
-    ids = np.load(f"{DATA_DIR}/subtrack_ids_ds.npy", allow_pickle=True)
+    ids = np.load(f"{DATA_DIR}/data/subtrack_ids_ds.npy", allow_pickle=True)
     tm, vm = official_masks(ids)
 
     # Ajusta el scaler (20 features) y carga el modelo de fusión (10)

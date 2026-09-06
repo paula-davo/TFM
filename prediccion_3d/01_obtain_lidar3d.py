@@ -5,6 +5,7 @@ Características de entrada: cx, cy, vx, vy, ax, ay, speed, sin_dir, cos_dir (me
 Características de salida: desplazamiento relativo (X e Y) en metros.
 """
 
+import os
 import json
 import numpy as np
 import pandas as pd
@@ -145,7 +146,7 @@ class Lidar3DLabelsBuilder:
 
     def save_numpy(self):
         # Carga la salida del dataset 2D para comprobar que el número de muestras es el mismo.
-        Y_img = np.load(f"{self.data_dir}/Y_ds.npy")
+        Y_img = np.load(f"{self.data_dir}/data/Y_ds.npy")
         print(f"X3d_motion: {self.X3d.shape}   Y3d: {self.Y3d.shape}   (Y_ds: {Y_img.shape[0]})")
         if self.X3d.shape[0] != Y_img.shape[0]:
             raise SystemExit("ERROR: no alineado con Y_ds.")
@@ -153,8 +154,9 @@ class Lidar3DLabelsBuilder:
         # Imprime desplazamiento medio
         print(f"\nY3d (metros) — desplazamiento medio: {np.linalg.norm(self.Y3d, axis=2).mean():.3f} m")
         # Guarda los datos
-        np.save(f"{self.data_dir}/X3d_motion.npy", self.X3d)
-        np.save(f"{self.data_dir}/Y3d.npy", self.Y3d)
+        os.makedirs(f"{self.data_dir}/data", exist_ok=True)
+        np.save(f"{self.data_dir}/data/X3d_motion.npy", self.X3d)
+        np.save(f"{self.data_dir}/data/Y3d.npy", self.Y3d)
         print("Guardado: X3d_motion.npy, Y3d.npy")
 
     def run(self):

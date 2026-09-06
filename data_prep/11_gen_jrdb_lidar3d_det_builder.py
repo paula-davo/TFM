@@ -3,6 +3,7 @@ Datos 3D a partir de las detecciones del lidar.
 Salidas: X3d_det_motion.npy (N,8,9), Y3d_det.npy (N,12,2)
 """
 
+import os
 import json
 import numpy as np
 import pandas as pd
@@ -172,14 +173,15 @@ class JRDBLidar3DDetBuilder:
 
     def save_numpy(self):
         # Comprueba alineación con Y_ds y guarda las muestras
-        Yref = np.load(f"{self.data_dir}/Y_ds.npy")
+        Yref = np.load(f"{self.data_dir}/data/Y_ds.npy")
         print(f"\nX3d_det: {self.X3d.shape}  Y3d_det: {self.Y3d.shape}  (Y_ds: {Yref.shape[0]})")
         if self.X3d.shape[0] != Yref.shape[0]:
             raise SystemExit("ERROR: no alineado con Y_ds.")
         print(f"Tasa de emparejamiento detección↔peatón: {100*self.matched/self.total:.1f}%")
 
-        np.save(f"{self.data_dir}/X3d_det_motion.npy", self.X3d)
-        np.save(f"{self.data_dir}/Y3d_det.npy", self.Y3d)
+        os.makedirs(f"{self.data_dir}/data", exist_ok=True)
+        np.save(f"{self.data_dir}/data/X3d_det_motion.npy", self.X3d)
+        np.save(f"{self.data_dir}/data/Y3d_det.npy", self.Y3d)
         print("Guardado: X3d_det_motion.npy, Y3d_det.npy")
 
     def run(self):

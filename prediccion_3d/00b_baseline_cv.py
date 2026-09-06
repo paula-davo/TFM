@@ -40,19 +40,12 @@ class CVBaseline3D:
 
     def val_split(self, xf, yf):
         # Validación oficial del dataset de detecciones 3D
-        X = np.load(f"{self.data_dir}/{xf}")
-        Y = np.load(f"{self.data_dir}/{yf}")
-        ids = np.load(f"{self.data_dir}/subtrack_ids_ds.npy", allow_pickle=True)
+        X = np.load(f"{self.data_dir}/data/{xf}")
+        Y = np.load(f"{self.data_dir}/data/{yf}")
+        ids = np.load(f"{self.data_dir}/data/subtrack_ids_ds.npy", allow_pickle=True)
         sck = np.array([s.rsplit("_", 2)[0] for s in ids])
         _, vm = official_masks(sck)
         return X[vm], Y[vm]
-
-    @staticmethod
-    def cv_disp(X_va, pred_len):
-        # Desplazamiento relativo del CV: p_{t+k} - p_t = k * v_t
-        vx, vy = X_va[:, -1, 2], X_va[:, -1, 3]
-        steps = np.arange(1, pred_len + 1, dtype=np.float32)
-        return np.stack([np.outer(vx, steps), np.outer(vy, steps)], axis=2)   # (N,pred,2)
 
     def compute_baselines(self):
         self.results = {}

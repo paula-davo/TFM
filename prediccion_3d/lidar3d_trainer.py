@@ -73,9 +73,9 @@ class Lidar3DTrainer:
 
     def load_data(self):
         # Carga los datos (X, Y) en metros y aplica la partición oficial
-        X = np.load(f"{self.data_dir}/{self.x_file}")
-        Y = np.load(f"{self.data_dir}/{self.y_file}")
-        subtrack_ids = np.load(f"{self.data_dir}/subtrack_ids_ds.npy", allow_pickle=True)
+        X = np.load(f"{self.data_dir}/data/{self.x_file}")
+        Y = np.load(f"{self.data_dir}/data/{self.y_file}")
+        subtrack_ids = np.load(f"{self.data_dir}/data/subtrack_ids_ds.npy", allow_pickle=True)
         print(f"{self.x_print} {X.shape}")
 
         # Partición oficial (el subtrack_id 3D lleva sufijo _cam_track: se recorta al id de secuencia)

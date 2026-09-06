@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 
@@ -119,10 +120,11 @@ class JRDBDatasetLoader:
 
     def save_numpy(self):
         # Guarda en formato .npy
-        np.save(f"{self.data_dir}/X_train.npy", self.X)
-        np.save(f"{self.data_dir}/Y_train.npy", self.Y)
-        np.save(f"{self.data_dir}/subtrack_ids.npy", self.subtrack_ids)
-        np.save(f"{self.data_dir}/splits.npy", self.splits)
+        os.makedirs(f"{self.data_dir}/data", exist_ok=True)
+        np.save(f"{self.data_dir}/data/X_train.npy", self.X)
+        np.save(f"{self.data_dir}/data/Y_train.npy", self.Y)
+        np.save(f"{self.data_dir}/data/subtrack_ids.npy", self.subtrack_ids)
+        np.save(f"{self.data_dir}/data/splits.npy", self.splits)
 
         print("Archivos guardados.")
 

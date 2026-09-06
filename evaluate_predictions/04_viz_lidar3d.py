@@ -21,10 +21,10 @@ from metrics_utils import angle
 
 if __name__ == "__main__":
     # Carga los datos de detecciones 3D
-    X = np.load(f"{DATA_DIR}/X3d_det_motion.npy")         # (N,8,9): cx,cy,vx,vy,ax,ay,speed,sin,cos
-    Y = np.load(f"{DATA_DIR}/Y3d_det.npy")[:, :PRED, :]   # (N,8,2) metros (8/8)
+    X = np.load(f"{DATA_DIR}/data/X3d_det_motion.npy")         # (N,8,9): cx,cy,vx,vy,ax,ay,speed,sin,cos
+    Y = np.load(f"{DATA_DIR}/data/Y3d_det.npy")[:, :PRED, :]   # (N,8,2) metros (8/8)
     # Partición oficial
-    ids = np.load(f"{DATA_DIR}/subtrack_ids_ds.npy", allow_pickle=True)
+    ids = np.load(f"{DATA_DIR}/data/subtrack_ids_ds.npy", allow_pickle=True)
     sck = np.array([s.rsplit("_", 2)[0] for s in ids])
     tm, vm = official_masks(sck)
 
