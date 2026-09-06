@@ -121,12 +121,12 @@ if __name__ == "__main__":
     n_inst = int(sys.argv[3]) if len(sys.argv) > 3 else 4
 
     # Carga los datos: fusión temprana (imagen 11 + detecciones 3D 9 = 20)
-    Ximg = np.load(f"{DATA_DIR}/X_ds.npy")             # (N,8,11)
-    X3d = np.load(f"{DATA_DIR}/X3d_det_motion.npy")    # (N,8,9)
+    Ximg = np.load(f"{DATA_DIR}/data/X_ds.npy")             # (N,8,11)
+    X3d = np.load(f"{DATA_DIR}/data/X3d_det_motion.npy")    # (N,8,9)
     X = np.concatenate([Ximg, X3d], axis=2)            # (N,8,20)
-    Y = np.load(f"{DATA_DIR}/Y3d_det.npy")[:, :8, :]   # (N,8,2) desplazamiento GT (8/8)
+    Y = np.load(f"{DATA_DIR}/data/Y3d_det.npy")[:, :8, :]   # (N,8,2) desplazamiento GT (8/8)
     # Carga partición oficial
-    ids = np.load(f"{DATA_DIR}/subtrack_ids_ds.npy", allow_pickle=True)
+    ids = np.load(f"{DATA_DIR}/data/subtrack_ids_ds.npy", allow_pickle=True)
     tm, vm = official_masks(ids)
 
     # Modelo adoptado (10) y predicción sobre validación

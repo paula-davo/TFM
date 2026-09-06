@@ -4,6 +4,7 @@ e información del entorno obtenida de la nube de puntos (7 características). P
 desplazamiento relativo en metros.
 """
 
+import os
 import sys
 import numpy as np
 import joblib
@@ -40,13 +41,13 @@ class Lidar3DDetEnvTrainer(Lidar3DTrainer):
 
     def load_data(self):
         # Carga los datos de entrada: detecciones 3D 8/8 (del 02b) + datos de entorno + flags
-        Xm = np.load(f"{self.data_dir}/X3d_det_8obs_8pred.npy")   # (N,8,9) metros, detecciones (02b)
-        Xe = np.load(f"{self.data_dir}/X_lidar_seq.npy")          # (N,8,7) entorno
-        fe = np.load(f"{self.data_dir}/lidar_seq_flags.npy")      # (N,8)
+        Xm = np.load(f"{self.data_dir}/data/X3d_det_8obs_8pred.npy")   # (N,8,9) metros, detecciones (02b)
+        Xe = np.load(f"{self.data_dir}/data/X_lidar_seq.npy")          # (N,8,7) entorno
+        fe = np.load(f"{self.data_dir}/data/lidar_seq_flags.npy")      # (N,8)
         # Carga los datos de salida: desplazamiento relativo en metros (8/8, del 02b)
-        Y = np.load(f"{self.data_dir}/Y3d_det_8obs_8pred.npy")    # (N,8,2) metros (8/8)
+        Y = np.load(f"{self.data_dir}/data/Y3d_det_8obs_8pred.npy")    # (N,8,2) metros (8/8)
         # Carga de subtrack IDs para partición
-        subtrack_ids = np.load(f"{self.data_dir}/subtrack_ids_ds.npy", allow_pickle=True)
+        subtrack_ids = np.load(f"{self.data_dir}/data/subtrack_ids_ds.npy", allow_pickle=True)
 
         # Concatena las características de detecciones y entorno: (N,8,9) + (N,8,7) -> (N,8,16)
         X = np.concatenate([Xm, Xe], axis=2)
@@ -62,7 +63,8 @@ class Lidar3DDetEnvTrainer(Lidar3DTrainer):
     def scale_features(self):
         # Scaler (reutiliza el de la base) y lo guarda para la inferencia posterior
         super().scale_features()
-        joblib.dump(self.scaler, f"{self.data_dir}/lidar3d_det_env_scaler.pkl")
+        os.makedirs(f"{self.data_dir}/scalers", exist_ok=True)
+        joblib.dump(self.scaler, f"{self.data_dir}/scalers/lidar3d_det_env_scaler.pkl")
 
     def evaluate(self):
         # Evaluación del modelo

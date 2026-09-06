@@ -5,6 +5,7 @@ Características de entrada: (N, 8, 7): (nº de puntos sobre el peatón, obstác
 densidad total en el recorte, obstáculo más cercano en las 4 direcciones).
 """
 
+import os
 import json
 import numpy as np
 import pandas as pd
@@ -194,7 +195,7 @@ class Lidar3DEnvBuilder:
 
         # Cuenta el número de ventanas y comprueba que sea igual al número 2D
         n = len(win_meta)
-        Y = np.load(f"{self.data_dir}/Y_ds.npy")
+        Y = np.load(f"{self.data_dir}/data/Y_ds.npy")
         print(f"Ventanas: {n}  vs Y_ds: {Y.shape[0]}")
         if n != Y.shape[0]:
             raise SystemExit("ERROR: no alineado con Y_ds.")
@@ -254,8 +255,9 @@ class Lidar3DEnvBuilder:
 
     def save_numpy(self):
         # Guarda las entradas y flags
-        np.save(f"{self.data_dir}/X_lidar_seq.npy", self.X)
-        np.save(f"{self.data_dir}/lidar_seq_flags.npy", self.flags)
+        os.makedirs(f"{self.data_dir}/data", exist_ok=True)
+        np.save(f"{self.data_dir}/data/X_lidar_seq.npy", self.X)
+        np.save(f"{self.data_dir}/data/lidar_seq_flags.npy", self.flags)
         print("Guardado: X_lidar_seq.npy, lidar_seq_flags.npy")
 
     def run(self):

@@ -182,10 +182,10 @@ def main():
 
     # 3. Preparación de los datos
     # Carga imagen 2D (11) + detecciones 3D (9), con partición oficial
-    Ximg = np.load(f"{DATA_DIR}/X_ds.npy")            # (N,8,11)
-    X3d = np.load(f"{DATA_DIR}/X3d_det_motion.npy")   # (N,8,9)
+    Ximg = np.load(f"{DATA_DIR}/data/X_ds.npy")            # (N,8,11)
+    X3d = np.load(f"{DATA_DIR}/data/X3d_det_motion.npy")   # (N,8,9)
     X20 = np.concatenate([Ximg, X3d], axis=2)         # (N,8,20)
-    ids = np.load(f"{DATA_DIR}/subtrack_ids_ds.npy", allow_pickle=True)
+    ids = np.load(f"{DATA_DIR}/data/subtrack_ids_ds.npy", allow_pickle=True)
     tm, _ = official_masks(ids)
     # Un scaler de 20 características (fusión) y otro de 9 (detecciones)
     scaler20 = StandardScaler().fit(X20[tm].reshape(-1, 20))

@@ -10,6 +10,7 @@ Salidas: X_social3d_det_ds, Y_social3d_det_ds, mask_social3d_det_ds, pos3d_socia
 scene_keys3d_det_ds.
 """
 
+import os
 import json
 import numpy as np
 import pandas as pd
@@ -184,9 +185,10 @@ if __name__ == "__main__":
     print(f"Tasa de emparejamiento detección-peatón: {match_rate:.1f}%")
     print(f"Y3d (metros) — desplazamiento medio: {np.linalg.norm(Y[mask], axis=2).mean():.3f} m")
 
-    np.save(f"{DATA_DIR}/X_social3d_det_ds.npy", X)         # entrada (escena, MAX_PEDS, 8, 9) detecciones
-    np.save(f"{DATA_DIR}/Y_social3d_det_ds.npy", Y)         # salida  (escena, MAX_PEDS, 12, 2) GT
-    np.save(f"{DATA_DIR}/mask_social3d_det_ds.npy", mask)   # máscara de peatones activos
-    np.save(f"{DATA_DIR}/pos3d_social3d_det_ds.npy", pos)   # posición detectada último frame obs (pooling)
-    np.save(f"{DATA_DIR}/scene_keys3d_det_ds.npy", keys)    # clave secuencia_cámara
+    os.makedirs(f"{DATA_DIR}/data", exist_ok=True)
+    np.save(f"{DATA_DIR}/data/X_social3d_det_ds.npy", X)         # entrada (escena, MAX_PEDS, 8, 9) detecciones
+    np.save(f"{DATA_DIR}/data/Y_social3d_det_ds.npy", Y)         # salida  (escena, MAX_PEDS, 12, 2) GT
+    np.save(f"{DATA_DIR}/data/mask_social3d_det_ds.npy", mask)   # máscara de peatones activos
+    np.save(f"{DATA_DIR}/data/pos3d_social3d_det_ds.npy", pos)   # posición detectada último frame obs (pooling)
+    np.save(f"{DATA_DIR}/data/scene_keys3d_det_ds.npy", keys)    # clave secuencia_cámara
     print("Guardado social 3D detecciones submuestreado.")

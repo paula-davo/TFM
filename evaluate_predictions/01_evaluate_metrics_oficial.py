@@ -141,13 +141,13 @@ def fmt_pct(m, ref):
 def main():
     results = []
 
-    Xm = np.load(f"{DATA_DIR}/X3d_motion.npy")            # etiquetas 3D (GT)
-    Y3 = np.load(f"{DATA_DIR}/Y3d.npy")[:, :PRED, :]
-    Xd = np.load(f"{DATA_DIR}/X3d_det_motion.npy")        # detecciones 3D
-    Yd = np.load(f"{DATA_DIR}/Y3d_det.npy")[:, :PRED, :]
-    Xe = np.load(f"{DATA_DIR}/X_lidar_seq.npy")           # entorno (7 features)
-    Ximg = np.load(f"{DATA_DIR}/X_ds.npy")                # imagen 2D (11 features)
-    ids3 = np.load(f"{DATA_DIR}/subtrack_ids_ds.npy", allow_pickle=True)
+    Xm = np.load(f"{DATA_DIR}/data/X3d_motion.npy")            # etiquetas 3D (GT)
+    Y3 = np.load(f"{DATA_DIR}/data/Y3d.npy")[:, :PRED, :]
+    Xd = np.load(f"{DATA_DIR}/data/X3d_det_motion.npy")        # detecciones 3D
+    Yd = np.load(f"{DATA_DIR}/data/Y3d_det.npy")[:, :PRED, :]
+    Xe = np.load(f"{DATA_DIR}/data/X_lidar_seq.npy")           # entorno (7 features)
+    Ximg = np.load(f"{DATA_DIR}/data/X_ds.npy")                # imagen 2D (11 features)
+    ids3 = np.load(f"{DATA_DIR}/data/subtrack_ids_ds.npy", allow_pickle=True)
     tm, vm = official_masks(ids3)
 
     # Modelo de velocidad constante 8/8. Referencia común
@@ -167,18 +167,18 @@ def main():
                     safe(ev_single, "prediccion_3d/best/lidar3d_det_env_best.keras", X16, Yd, vm, fit_scaler(X16[tm], 16), 16)))
 
     # 4. Det + social (05c)
-    Xsa = np.load(f"{DATA_DIR}/X_social3d_det_ds.npy")
-    Ysa = np.load(f"{DATA_DIR}/Y_social3d_det_ds.npy")[:, :, :PRED, :]
-    Msa = np.load(f"{DATA_DIR}/mask_social3d_det_ds.npy")
-    Psa = np.load(f"{DATA_DIR}/pos3d_social3d_det_ds.npy")
-    Ksa = np.load(f"{DATA_DIR}/scene_keys3d_det_ds.npy", allow_pickle=True)
+    Xsa = np.load(f"{DATA_DIR}/data/X_social3d_det_ds.npy")
+    Ysa = np.load(f"{DATA_DIR}/data/Y_social3d_det_ds.npy")[:, :, :PRED, :]
+    Msa = np.load(f"{DATA_DIR}/data/mask_social3d_det_ds.npy")
+    Psa = np.load(f"{DATA_DIR}/data/pos3d_social3d_det_ds.npy")
+    Ksa = np.load(f"{DATA_DIR}/data/scene_keys3d_det_ds.npy", allow_pickle=True)
     tms, vms = official_masks(Ksa)
     scs = StandardScaler().fit(Xsa[tms].reshape(-1, 9))
     results.append(("Det + social *",
                     safe(ev_social3d, "prediccion_3d/best/social3d_det_best.weights.h5", Xsa, Ysa, Msa, Psa, vms, scs)))
 
     # 5. Det + pose (05e)
-    Xpo = np.load(f"{DATA_DIR}/X_3d_pose_ds.npy")
+    Xpo = np.load(f"{DATA_DIR}/data/X_3d_pose_ds.npy")
     results.append(("Det + pose",
                     safe(ev_single, "prediccion_3d/best/pose3d_best.keras", Xpo, Yd, vm, fit_scaler(Xpo[tm], 17), 17)))
 

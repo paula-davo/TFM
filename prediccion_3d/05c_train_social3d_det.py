@@ -56,11 +56,11 @@ class SocialLSTM3DDetTrainer:
 
     def load_data(self):
         # Carga el dataset social 3D de detecciones y aplica la partición oficial
-        X = np.load(f"{self.data_dir}/X_social3d_det_ds.npy")
-        Y = np.load(f"{self.data_dir}/Y_social3d_det_ds.npy")[:, :, :self.pred_len, :]   # (esc,peds,8,2) 8/8
-        mask = np.load(f"{self.data_dir}/mask_social3d_det_ds.npy")
-        pos3d = np.load(f"{self.data_dir}/pos3d_social3d_det_ds.npy")
-        keys = np.load(f"{self.data_dir}/scene_keys3d_det_ds.npy", allow_pickle=True)
+        X = np.load(f"{self.data_dir}/data/X_social3d_det_ds.npy")
+        Y = np.load(f"{self.data_dir}/data/Y_social3d_det_ds.npy")[:, :, :self.pred_len, :]   # (esc,peds,8,2) 8/8
+        mask = np.load(f"{self.data_dir}/data/mask_social3d_det_ds.npy")
+        pos3d = np.load(f"{self.data_dir}/data/pos3d_social3d_det_ds.npy")
+        keys = np.load(f"{self.data_dir}/data/scene_keys3d_det_ds.npy", allow_pickle=True)
         print(f"X: {X.shape}")
 
         # Split oficial por escena (scene_keys -> secuencia)
@@ -75,7 +75,8 @@ class SocialLSTM3DDetTrainer:
         # Aplica el scaler (9 features) y lo guarda
         self.Xtr_s, self.Xva_s, self.scaler = scale_train_val(
             self.Xtr, self.Xva, self.n_features)
-        joblib.dump(self.scaler, f"{self.data_dir}/social3d_det_scaler.pkl")
+        os.makedirs(f"{self.data_dir}/scalers", exist_ok=True)
+        joblib.dump(self.scaler, f"{self.data_dir}/scalers/social3d_det_scaler.pkl")
 
     def build_model(self):
         # Crea el modelo SocialLSTM, con 9 features de entrada y pérdida MAE

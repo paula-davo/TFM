@@ -4,6 +4,7 @@ Parte del LSTM con detecciones 3D a 8/8 con pérdida MAE (04e) y duplica el conj
 entrenamiento con el reflejo lateral de los datos.
 """
 
+import os
 import sys
 import numpy as np
 import joblib
@@ -40,9 +41,9 @@ class Lidar3DDetFlipTrainer(Lidar3DTrainer):
 
     def load_data(self):
         # Detecciones 3D en metros (entrada) y desplazamiento GT desde la última detección (salida)
-        X = np.load(f"{self.data_dir}/X3d_det_motion.npy")   # (N,8,9) metros, detecciones
-        Y = np.load(f"{self.data_dir}/Y3d_det.npy")[:, :self.pred_len, :]   # (N,8,2) metros (8/8)
-        subtrack_ids = np.load(f"{self.data_dir}/subtrack_ids_ds.npy", allow_pickle=True)
+        X = np.load(f"{self.data_dir}/data/X3d_det_motion.npy")   # (N,8,9) metros, detecciones
+        Y = np.load(f"{self.data_dir}/data/Y3d_det.npy")[:, :self.pred_len, :]   # (N,8,2) metros (8/8)
+        subtrack_ids = np.load(f"{self.data_dir}/data/subtrack_ids_ds.npy", allow_pickle=True)
         print(f"{self.x_print} {X.shape}")
 
         # Media lateral: si se aleja de 0 hay un sesgo izquierda/derecha que el reflejo eliminaría
@@ -64,7 +65,8 @@ class Lidar3DDetFlipTrainer(Lidar3DTrainer):
     def scale_features(self):
         # Scaler (reutiliza el de la base) y lo guarda para la inferencia posterior
         super().scale_features()
-        joblib.dump(self.scaler, f"{self.data_dir}/lidar3d_det_flip_scaler.pkl")
+        os.makedirs(f"{self.data_dir}/scalers", exist_ok=True)
+        joblib.dump(self.scaler, f"{self.data_dir}/scalers/lidar3d_det_flip_scaler.pkl")
 
     def evaluate(self):
         pred = self.model.predict(self.X_va_s, batch_size=512, verbose=0)

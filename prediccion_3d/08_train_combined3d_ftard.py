@@ -59,10 +59,10 @@ class Combined3DFTardTrainer:
     def load_data(self):
         # Carga de datos: entrada de características de imagen 2D + entrada de características de detecciones 3D +
         # salida en metros.
-        self.X_img = np.load(f"{self.data_dir}/X_ds.npy")            # (N,8,11)
-        self.X_3d = np.load(f"{self.data_dir}/X3d_det_motion.npy")   # (N,8,9)
-        self.Y = np.load(f"{self.data_dir}/Y3d_det.npy")[:, :self.pred_len, :]   # metros (8/8)
-        subtrack_ids = np.load(f"{self.data_dir}/subtrack_ids_ds.npy", allow_pickle=True)
+        self.X_img = np.load(f"{self.data_dir}/data/X_ds.npy")            # (N,8,11)
+        self.X_3d = np.load(f"{self.data_dir}/data/X3d_det_motion.npy")   # (N,8,9)
+        self.Y = np.load(f"{self.data_dir}/data/Y3d_det.npy")[:, :self.pred_len, :]   # metros (8/8)
+        subtrack_ids = np.load(f"{self.data_dir}/data/subtrack_ids_ds.npy", allow_pickle=True)
 
         # Partición oficial (el subtrack_id 3D lleva sufijo _cam_track: se recorta al id de secuencia)
         sck = np.array([s.rsplit("_", 2)[0] for s in subtrack_ids])

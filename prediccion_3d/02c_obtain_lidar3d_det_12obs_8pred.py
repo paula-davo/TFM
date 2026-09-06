@@ -5,6 +5,7 @@ Se regenera con el builder de detecciones (data_prep/11_gen_jrdb_lidar3d_det_bui
 llamándolo con obs_len=12, pred_len=8.
 """
 
+import os
 import importlib.util
 import numpy as np
 
@@ -27,6 +28,7 @@ if __name__ == "__main__":
 
     print(f"X: {builder.X3d.shape}  Y: {builder.Y3d.shape}  "
           f"emparejamiento={100*builder.matched/builder.total:.1f}%")
-    np.save(f"{DATA_DIR}/X3d_det_12obs_8pred.npy", builder.X3d)
-    np.save(f"{DATA_DIR}/Y3d_det_12obs_8pred.npy", builder.Y3d)
+    os.makedirs(f"{DATA_DIR}/data", exist_ok=True)
+    np.save(f"{DATA_DIR}/data/X3d_det_12obs_8pred.npy", builder.X3d)
+    np.save(f"{DATA_DIR}/data/Y3d_det_12obs_8pred.npy", builder.Y3d)
     print("Guardado: X3d_det_12obs_8pred.npy, Y3d_det_12obs_8pred.npy")

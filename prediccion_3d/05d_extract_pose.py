@@ -3,6 +3,7 @@ Genera los datos con información de pose: 11 características 2D +
 8 características de pose. del modelo LSTM con información de pose.
 """
 
+import os
 import json
 import numpy as np
 import pandas as pd
@@ -128,12 +129,13 @@ if __name__ == "__main__":
     print(f"STRIDE = {STRIDE}")
     X, subtrack_ids = create_sequences(df)
     # 6. Carga la Y (salida)
-    Y = np.load(f"{DATA_DIR}/Y_ds.npy")
+    Y = np.load(f"{DATA_DIR}/data/Y_ds.npy")
     # 7. Comprueba que tengan el mismo tamaño, que estén alineados
     print(f"\nX_ds_pose: {X.shape}  vs  Y_ds: {Y.shape[0]} muestras")
     if X.shape[0] != Y.shape[0]:
         raise SystemExit("ERROR: no alineado con Y_ds (¿mismo STRIDE que obtain_downsampled_data.py?).")
     print("Alineación correcta")
     # 8. Guarda la nueva entrada con datos de pose
-    np.save(f"{DATA_DIR}/X_ds_pose.npy", X)
+    os.makedirs(f"{DATA_DIR}/data", exist_ok=True)
+    np.save(f"{DATA_DIR}/data/X_ds_pose.npy", X)
     print(f"Guardado: X_ds_pose.npy")

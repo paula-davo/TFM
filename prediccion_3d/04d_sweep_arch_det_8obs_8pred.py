@@ -51,9 +51,9 @@ CONFIGS = [
 
 def main():
     # Detecciones 3D 8/8 y partición oficial
-    X = np.load(f"{DATA_DIR}/X3d_det_8obs_8pred.npy")
-    Y = np.load(f"{DATA_DIR}/Y3d_det_8obs_8pred.npy")
-    ids = np.load(f"{DATA_DIR}/subtrack_ids_ds.npy", allow_pickle=True)
+    X = np.load(f"{DATA_DIR}/data/X3d_det_8obs_8pred.npy")
+    Y = np.load(f"{DATA_DIR}/data/Y3d_det_8obs_8pred.npy")
+    ids = np.load(f"{DATA_DIR}/data/subtrack_ids_ds.npy", allow_pickle=True)
     sck = np.array([s.rsplit("_", 2)[0] for s in ids])
     tm, vm = official_masks(sck)
     Xtr, Xva, Ytr, Yva = X[tm], X[vm], Y[tm], Y[vm]

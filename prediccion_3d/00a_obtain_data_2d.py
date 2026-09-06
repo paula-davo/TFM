@@ -2,6 +2,7 @@
 Crea el dataset 2D.
 """
 
+import os
 import numpy as np
 import pandas as pd
 
@@ -91,7 +92,8 @@ if __name__ == "__main__":
     print(f"\nY (desplazamientos) — std: {Y.std():.4f}")
 
     # Guarda ambos conjuntos asi como los subtrack_ids.
-    np.save(f"{DATA_DIR}/X_ds.npy", X)
-    np.save(f"{DATA_DIR}/Y_ds.npy", Y)
-    np.save(f"{DATA_DIR}/subtrack_ids_ds.npy", subtrack_ids)
+    os.makedirs(f"{DATA_DIR}/data", exist_ok=True)
+    np.save(f"{DATA_DIR}/data/X_ds.npy", X)
+    np.save(f"{DATA_DIR}/data/Y_ds.npy", Y)
+    np.save(f"{DATA_DIR}/data/subtrack_ids_ds.npy", subtrack_ids)
     print(f"\nGuardado: X_ds.npy, Y_ds.npy, subtrack_ids_ds.npy")

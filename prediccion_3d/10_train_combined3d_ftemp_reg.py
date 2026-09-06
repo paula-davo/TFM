@@ -48,10 +48,10 @@ class Combined3DFTempRegTrainer(Lidar3DTrainer):
     def load_data(self):
         # Carga de datos: entrada de imagen 2D (11) + detección 3D (9) = 20
         # Salida en metros (8/8)
-        X_img = np.load(f"{self.data_dir}/X_ds.npy")            # (N,8,11)
-        X_3d = np.load(f"{self.data_dir}/X3d_det_motion.npy")   # (N,8,9)
-        Y = np.load(f"{self.data_dir}/Y3d_det.npy")[:, :self.pred_len, :]   # (N,8,2) metros
-        ids = np.load(f"{self.data_dir}/subtrack_ids_ds.npy", allow_pickle=True)
+        X_img = np.load(f"{self.data_dir}/data/X_ds.npy")            # (N,8,11)
+        X_3d = np.load(f"{self.data_dir}/data/X3d_det_motion.npy")   # (N,8,9)
+        Y = np.load(f"{self.data_dir}/data/Y3d_det.npy")[:, :self.pred_len, :]   # (N,8,2) metros
+        ids = np.load(f"{self.data_dir}/data/subtrack_ids_ds.npy", allow_pickle=True)
 
         # Concatena las características: (N,8,11) + (N,8,9) -> (N,8,20)
         X = np.concatenate([X_img, X_3d], axis=2)

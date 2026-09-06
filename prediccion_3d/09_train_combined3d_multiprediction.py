@@ -19,8 +19,10 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCh
 
 DATA_DIR = "/mnt/c/Users/paula/Desktop/TFM"
 sys.path.insert(0, DATA_DIR)
+sys.path.insert(0, f"{DATA_DIR}/evaluate_predictions")   # dense_band_pred
 from split_utils import official_masks
 from lstm_common import scale_train_val, load_cv_ref
+from metrics_utils import dense_band_pred
 
 OBS_LEN, PRED_LEN = 8, 8
 N_IMG, N_3D = 11, 9
@@ -46,26 +48,6 @@ def wta_loss(y_true, y_pred):
     mean = tf.reduce_mean(err, axis=1)
     # Pérdida = 95% best + 5% mean
     return tf.reduce_mean((1.0 - EPS) * best + EPS * mean)
-
-
-def dense_band_pred(preds, radius):
-    # Elegir la trayectoria representativa entre las 20
-    N, K_, T, _ = preds.shape
-    # Punto final de cada predicción (N,K,2)
-    end = preds[:, :, -1, :]
-    # Distancia entre todos los puntos finales (N,K,K)
-    d = np.linalg.norm(end[:, :, None, :] - end[:, None, :, :], axis=3)
-    # Predicciones dentro del radio de cada predicción (N,K,K)
-    within = d <= radius
-    # Contar vecinas de cada predicción (N,K)
-    counts = within.sum(axis=2)
-    # Predicción con más vecinas (moda) -> (N,)
-    mode = counts.argmax(axis=1)
-    # Promedia las predicciones de esa franja densa
-    rep = np.empty((N, T, 2), dtype=np.float32)
-    for i in range(N):
-        rep[i] = preds[i, within[i, mode[i]]].mean(axis=0)
-    return rep
 
 
 class Combined3DMultimodalTrainer:
@@ -101,10 +83,10 @@ class Combined3DMultimodalTrainer:
     def load_data(self):
         # Carga de datos: entrada de imagen 2D (11) + detecciones 3D (9) -> 20
         # Salida = desplazamiento GT (metros)
-        X_img = np.load(f"{self.data_dir}/X_ds.npy")            # (N,8,11) imagen 2D
-        X_3d = np.load(f"{self.data_dir}/X3d_det_motion.npy")   # (N,8,9) detecciones 3D
-        Y = np.load(f"{self.data_dir}/Y3d_det.npy")[:, :self.pred_len, :]   # (N,8,2) metros (8/8)
-        subtrack_ids = np.load(f"{self.data_dir}/subtrack_ids_ds.npy", allow_pickle=True)
+        X_img = np.load(f"{self.data_dir}/data/X_ds.npy")            # (N,8,11) imagen 2D
+        X_3d = np.load(f"{self.data_dir}/data/X3d_det_motion.npy")   # (N,8,9) detecciones 3D
+        Y = np.load(f"{self.data_dir}/data/Y3d_det.npy")[:, :self.pred_len, :]   # (N,8,2) metros (8/8)
+        subtrack_ids = np.load(f"{self.data_dir}/data/subtrack_ids_ds.npy", allow_pickle=True)
         X = np.concatenate([X_img, X_3d], axis=2)              # (N,8,20)
         print(f"X(imagen+3D): {X.shape}  Y(metros): {Y.shape}")
 

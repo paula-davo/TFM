@@ -35,10 +35,10 @@ class Lidar3DPoseTrainer(Lidar3DTrainer):
 
     def load_data(self):
         # Carga los datos (detecciones 3D + pose) y aplica la partición oficial
-        X = np.load(f"{self.data_dir}/X_3d_pose_ds.npy")
+        X = np.load(f"{self.data_dir}/data/X_3d_pose_ds.npy")
         # Y3d_det: GT desde la última posición detectada -> pareja de X detecciones
-        Y = np.load(f"{self.data_dir}/Y3d_det.npy")[:, :self.pred_len, :]   # (N,8,2) metros (8/8)
-        subtrack_ids = np.load(f"{self.data_dir}/subtrack_ids_ds.npy", allow_pickle=True)
+        Y = np.load(f"{self.data_dir}/data/Y3d_det.npy")[:, :self.pred_len, :]   # (N,8,2) metros (8/8)
+        subtrack_ids = np.load(f"{self.data_dir}/data/subtrack_ids_ds.npy", allow_pickle=True)
         print(f"{self.x_print} {X.shape}")
 
         # Partición oficial (el subtrack_id lleva sufijo _cam_track: se recorta al id de secuencia)
