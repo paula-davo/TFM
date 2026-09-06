@@ -1,0 +1,13 @@
+.claude/
+.git/
+__pycache__/
+anotaciones/
+data/
+documentacion_pdfs/
+figuras/
+jrdb_mmpose_train/
+scalers/
+test_dataset_without_labels/
+train_dataset_with_activity/
+*.csv
+*.zip
